@@ -1,5 +1,6 @@
 ﻿
 using ECommerceWebsite.data;
+using ECommerceWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ECommerceWebsite.Controllers
 {
     public class ProductController : Controller
     {
-        private ProductContext context;
+        private readonly ProductContext context;
 
         public ProductController(ProductContext context)
         {
@@ -23,9 +24,10 @@ namespace ECommerceWebsite.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
-            // Display all products
-            
-            return View();
+            // Get all products, then display all products
+            List<Product> products = context.Products.ToList();
+
+            return View(products);
         }
     }
 }
