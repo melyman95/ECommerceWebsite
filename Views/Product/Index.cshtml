@@ -1,7 +1,11 @@
-﻿
+﻿@model IEnumerable<Product>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Product Catalog";
 }
 
-<h1>Index</h1>
+<h1>Product Catalog</h1>
 
+@foreach(Product p in Model)
+            {
+                <p>@p.Title</p>
+            }
