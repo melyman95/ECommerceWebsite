@@ -53,5 +53,17 @@ namespace ECommerceWebsite.Controllers
             }
             return View();
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            // get product with corresponding id
+            // pass product to view
+
+            Product p =
+               await (from prod in context.Products
+                      where prod.ProductId == id
+                      select prod).SingleAsync();
+            return View(p);
+        }
     }
 }
