@@ -29,8 +29,15 @@ namespace ECommerceWebsite.Controllers
             const int PageSize = 3;
             const int Offset = 1;
 
-            // Get 3 of the products in the database.
-            List<Product> products =
+            int numProducts = await (from p in context.Products
+                               select p).CountAsync();
+
+            int totalPages = (int)Math.Ceiling((double)numProducts / PageSize);
+
+            ViewData["MaxPage"] = totalPages;
+
+            // Get 3 of the products in the database to display on one page at a time.
+            List < Product > products =
                 await (from p in context.Products
                        orderby p.Title ascending
                        select p)
