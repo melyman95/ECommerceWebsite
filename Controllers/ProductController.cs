@@ -30,21 +30,14 @@ namespace ECommerceWebsite.Controllers
             const int Offset = 1;
             ViewData["CurrentPage"] = pageNum;
 
-            int numProducts = await (from p in context.Products
-                               select p).CountAsync();
+            int numProducts = await ProductDb.GetProductsAsync(context);
 
             int totalPages = (int)Math.Ceiling((double)numProducts / PageSize);
 
             ViewData["MaxPage"] = totalPages;
 
             // Get 3 of the products in the database to display on one page at a time.
-            List < Product > products =
-                await (from p in context.Products
-                       orderby p.Title ascending
-                       select p)
-                       .Skip(PageSize * (pageNum - Offset))
-                       .Take(PageSize)
-                       .ToListAsync();
+            List<Product> products = await ProductDb.GetProductsAsync(context, PageSize, pageNum, Offset);
 
             return View(products);
         }
@@ -62,8 +55,7 @@ namespace ECommerceWebsite.Controllers
             {
                 // Add to database
                 // redirect back to catalog page
-                context.Products.Add(p);
-                await context.SaveChangesAsync();
+                await ProductDb.AddProductAsync(context, p);
 
                 TempData["Message"] = $"{p.Title} was added successfully.";
 
@@ -90,8 +82,7 @@ namespace ECommerceWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Entry(p).State = EntityState.Modified;
-                await context.SaveChangesAsync();
+                await ProductDb.EditProductAsync(context, p);
 
                 ViewData["Message"] = "Product updated successfully.";
 
@@ -114,17 +105,9 @@ namespace ECommerceWebsite.Controllers
         [ActionName("Delete")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            Product p =
-               await (from prod in context.Products
-                      where prod.ProductId == id
-                      select prod).SingleAsync();
+            await ProductDb.DeleteProductAsync(context, id);
 
-            String prodTitle = p.Title;
-
-            context.Entry(p).State = EntityState.Deleted;
-            await context.SaveChangesAsync();
-
-            TempData["Message"] = prodTitle + " was deleted.";
+            TempData["Message"] = "Product was deleted.";
 
             return RedirectToAction("Index");
         }
