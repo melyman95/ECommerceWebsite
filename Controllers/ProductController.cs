@@ -80,5 +80,15 @@ namespace ECommerceWebsite.Controllers
             }
             return View(p);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            Product p =
+               await (from prod in context.Products
+                      where prod.ProductId == id
+                      select prod).SingleAsync();
+
+            return View(p);
+        }
     }
 }
