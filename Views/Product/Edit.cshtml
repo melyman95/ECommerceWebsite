@@ -4,7 +4,13 @@
     ViewData["Title"] = "Edit " + Model.Title;
 }
 
-    <h1>Edit</h1>
+    <h1>Edit @Model.Title</h1>
+@if (ViewData["Message"] != null)
+{
+<div class="alert alert-success">
+    @ViewData["Message"]    
+</div>
+}
 
     <hr />
     <div class="row">

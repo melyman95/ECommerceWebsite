@@ -54,6 +54,7 @@ namespace ECommerceWebsite.Controllers
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             // get product with corresponding id
@@ -63,6 +64,20 @@ namespace ECommerceWebsite.Controllers
                await (from prod in context.Products
                       where prod.ProductId == id
                       select prod).SingleAsync();
+            return View(p);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Product p)
+        {
+            if (ModelState.IsValid)
+            {
+                context.Entry(p).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+
+                ViewData["Message"] = "Product updated successfully.";
+
+            }
             return View(p);
         }
     }
