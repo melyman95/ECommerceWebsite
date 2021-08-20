@@ -28,6 +28,7 @@ namespace ECommerceWebsite.Controllers
             int pageNum = id ?? 1;
             const int PageSize = 3;
             const int Offset = 1;
+            ViewData["CurrentPage"] = pageNum;
 
             int numProducts = await (from p in context.Products
                                select p).CountAsync();
