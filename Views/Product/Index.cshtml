@@ -4,47 +4,47 @@
 }
 
 <div class="text-center">
-<h1>Product Catalog</h1>
+    <h1>Product Catalog</h1>
 
-@if (TempData["Message"] != null)
-{
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    @TempData["Message"]
-    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-}
-
-<a asp-action="Add">Add Product</a>
-
-<div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr class="table-active">
-                <th> Title </th>
-                <th> Price </th>
-                <th> Category </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(Product p in Model)
-            {
-            <tr>
-                <td>@p.Title</td>
-                <td>@p.Price</td>
-                <td>@p.Category</td>
-                <td>
-                    <a class="btn btn-primary" href="">Edit</a>
-                    <a class="btn btn-danger" href="">Delete</a>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-    <div class="container-fluid">
-    <img src="~/css/merchant.jpg"  alt="keyboard" class="img-fluid" />
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close-white" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-    <h1>Whadda ya buyin?</h1>
-</div>
+    }
+
+    <a asp-action="Add">Add Product</a>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr class="table-active">
+                    <th> Title </th>
+                    <th> Price </th>
+                    <th> Category </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Product p in Model)
+                {
+                    <tr>
+                        <td>@p.Title</td>
+                        <td>@p.Price</td>
+                        <td>@p.Category</td>
+                        <td>
+                            <a class="btn btn-primary" href="">Edit</a>
+                            <a class="btn btn-danger" href="">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="container-fluid">
+            <img src="~/css/merchant.jpg" alt="keyboard" class="img-fluid" />
+        </div>
+        <h1>Whadda ya buyin?</h1>
     </div>
+</div>
