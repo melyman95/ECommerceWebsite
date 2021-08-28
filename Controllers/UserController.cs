@@ -1,6 +1,7 @@
 ﻿using ECommerceWebsite.data;
 using ECommerceWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,30 @@ namespace ECommerceWebsite.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(reg);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            Account account =
+               await (from u in _context.Accounts
+                 where (u.UserName == model.UserNameOrEmail
+                 || u.Email == model.UserNameOrEmail)
+                 && u.Password == model.Password
+                 select u).SingleOrDefaultAsync();
+
+            if (account == null)
+            {
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
