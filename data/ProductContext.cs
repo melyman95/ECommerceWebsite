@@ -16,5 +16,7 @@ namespace ECommerceWebsite.data
         }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Account> Accounts { get; set; }
     }
 }
