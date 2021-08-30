@@ -31,6 +31,33 @@ namespace ECommerceWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Checking if username/email is unique/in use
+                // if so, display error and send back to view
+                bool EmailTaken = await (from useraccount in _context.Accounts
+                                   where useraccount.Email == reg.Email
+                                   select useraccount).AnyAsync();
+
+                bool UserNameTaken = await (from useraccount in _context.Accounts
+                                            where useraccount.UserName == reg.UserName
+                                            select useraccount).AnyAsync();
+
+                if (EmailTaken)
+                {
+                    ModelState.AddModelError(nameof(RegisterViewModel.Email), "That email is already in use.");
+                    return View(reg);
+                }
+
+                if (UserNameTaken)
+                {
+                    ModelState.AddModelError(nameof(RegisterViewModel.UserName), "That username is already taken.");
+                    return View(reg);
+                }
+
+                if (EmailTaken || UserNameTaken)
+                {
+                    return View(reg);
+                }
+
                 Account account = new Account()
                 {
                     DateOfBirth = reg.DateOfBirth,
