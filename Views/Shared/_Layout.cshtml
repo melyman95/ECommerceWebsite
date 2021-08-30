@@ -1,4 +1,28 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.EntityFrameworkCore
+@inject IHttpContextAccessor SessionData
+@inject ECommerceWebsite.data.ProductContext db
+
+@{ 
+    int? userID = SessionData.HttpContext.Session.GetInt32("UserID");
+    string username = null;
+    if (userID.HasValue)
+    {
+        string sessionUserName = SessionData.HttpContext.Session.GetString("Username");
+        if (sessionUserName == null)
+        {
+            username = await (from u in db.Accounts
+                              where u.AccountID == userID
+                              select u.UserName).SingleOrDefaultAsync();
+            SessionData.HttpContext.Session.SetString("Username", username);
+        }
+        else
+        {
+            username = sessionUserName;
+        }
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -27,9 +51,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
-                        </li>
+                        
+                        @if (userID == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark">Welcome back, @username!</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
