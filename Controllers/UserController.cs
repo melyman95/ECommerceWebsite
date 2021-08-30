@@ -1,5 +1,6 @@
 ﻿using ECommerceWebsite.data;
 using ECommerceWebsite.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,12 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            // Check if already logged in
+            if (HttpContext.Session.GetInt32("UserID").HasValue)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -76,6 +83,9 @@ namespace ECommerceWebsite.Controllers
                 ModelState.AddModelError(string.Empty, "Account not found.");
                 return View(model);
             }
+
+            // credentials did match, log the user in
+            HttpContext.Session.SetInt32("UserID", account.AccountID);
 
             return RedirectToAction("Index", "Home");
         }
