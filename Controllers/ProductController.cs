@@ -67,24 +67,21 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            // get product with corresponding id
-            // pass product to view
+            Product p = await ProductDb.GetSingleProductAsync(context, id);
 
-            Product p =
-               await (from prod in context.Products
-                      where prod.ProductId == id
-                      select prod).SingleAsync();
             return View(p);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(Product p)
         {
+            string prodName = p.Title;
+
             if (ModelState.IsValid)
             {
                 await ProductDb.EditProductAsync(context, p);
 
-                ViewData["Message"] = "Product updated successfully.";
+                ViewData["Message"] = $"{p.Title} was updated successfully.";
 
             }
             return View(p);
@@ -93,10 +90,7 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            Product p =
-               await (from prod in context.Products
-                      where prod.ProductId == id
-                      select prod).SingleAsync();
+            Product p = await ProductDb.GetSingleProductAsync(context, id);
 
             return View(p);
         }

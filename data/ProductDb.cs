@@ -29,6 +29,15 @@ namespace ECommerceWebsite.data
             return products;
         }
 
+        public async static Task<Product> GetSingleProductAsync(ProductContext context, int id)
+        {
+            Product p = await (from products in context.Products
+                               where products.ProductId == id
+                               select products).SingleAsync();
+            
+            return p;
+        }
+
         public async static Task<Product> AddProductAsync(ProductContext context, Product p)
         {
             context.Products.Add(p);
@@ -38,6 +47,8 @@ namespace ECommerceWebsite.data
 
         public async static Task<Product> EditProductAsync(ProductContext context, Product p)
         {
+            string prodName = p.Title;
+
             context.Entry(p).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return p;
