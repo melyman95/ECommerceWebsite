@@ -22,13 +22,15 @@ namespace ECommerceWebsite.Controllers
             _httpContext = httpContext;
         }
 
-        public async Task<IActionResult> Add(int id)
+        public async Task<IActionResult> Add(int id, string previousUrl)
         {
             Product p = await ProductDb.GetSingleProductAsync(_context, id);
 
             CookieHelper.AddProductToCart(_httpContext, p);
 
-            return RedirectToAction("Index", "Product");
+            TempData["Message"] = p.Title + " added successfully";
+
+            return Redirect(previousUrl);
         }
 
         public IActionResult Summary()
