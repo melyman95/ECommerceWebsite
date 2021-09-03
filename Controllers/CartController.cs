@@ -13,20 +13,34 @@ namespace ECommerceWebsite.Controllers
 {
     public class CartController : Controller
     {
-        private readonly ProductContext context;
-        private readonly IHttpContextAccessor httpContext;
+        private readonly ProductContext _context;
+        private readonly IHttpContextAccessor _httpContext;
 
         public CartController(ProductContext context, IHttpContextAccessor httpContext)
         {
-            this.context = context;
-            this.httpContext = httpContext;
+            _context = context;
+            _httpContext = httpContext;
         }
 
         public async Task<IActionResult> AddToCart(int id)
         {
-            Product p = await ProductDb.GetSingleProductAsync(context, id);
+            Product p = await ProductDb.GetSingleProductAsync(_context, id);
 
-            string data = JsonConvert.SerializeObject(p);
+            const string CartCookie = "CartCookie";
+
+            // Get existing cart items
+            string existingItems = _httpContext.HttpContext.Request.Cookies[CartCookie];
+            List<Product> cartProducts = new List<Product>();
+            if (existingItems != null)
+            {
+                cartProducts = JsonConvert.DeserializeObject<List<Product>>(existingItems);
+            }
+
+            // Add current product to existing cart
+            cartProducts.Add(p);
+
+            // Add products list to cart cookie
+            string data = JsonConvert.SerializeObject(cartProducts);
             CookieOptions options = new CookieOptions()
             {
                 Expires = DateTime.Now.AddYears(1),
@@ -34,15 +48,18 @@ namespace ECommerceWebsite.Controllers
                 IsEssential = true
             };
 
-            httpContext.HttpContext.Response.Cookies.Append("Cart_Cookie", data, options);
+            _httpContext.HttpContext.Response.Cookies.Append(CartCookie, data, options);
 
             return RedirectToAction("Index", "Product");
         }
 
         public IActionResult Summary()
         {
-            // display all products in shopping cart cookie
-            return View();
+            string cookieData = _httpContext.HttpContext.Request.Cookies["CartCookie"];
+
+            List<Product> cartProducts = JsonConvert.DeserializeObject<List<Product>>(cookieData);
+
+            return View(cartProducts);
         }
     }
 }
